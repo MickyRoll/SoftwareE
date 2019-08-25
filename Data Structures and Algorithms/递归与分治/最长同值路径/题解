@@ -1,0 +1,95 @@
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func longestUnivaluePath(root *TreeNode) int {
+    _, _,  max :=  TreeLongestPath(root)
+   return  max
+}
+
+func max(a int, b int) int{
+	if  a >= b {
+		return a
+	}else{
+		return b
+	}
+}
+
+func max3(a int, b int, c int) int{
+	max := a
+	if  a < b {
+		max = b
+	}
+	if max < c {
+		max = c
+	}
+	return max
+}
+
+func TreeLongestPath(r *TreeNode) (pathAtVertex int, pathNoVertex int, pathMax int) {
+	 pathAtVertexRt, pathNoVertexRt, pathMaxRt := 0,0,0
+	 pathOverVertex := 0
+	 if r == nil {
+	 	return pathAtVertexRt, pathNoVertexRt, pathMaxRt
+	 }
+	//左右子树为空
+	if r.Left == nil  &&  r.Right == nil{
+		pathAtVertexRt = 0
+		pathMaxRt = 0
+		//fmt.Println("empty")
+		return pathAtVertexRt, pathNoVertexRt, pathMaxRt
+	}
+
+	lPathAtVertex, lPathNoVertex, lPathMax := 0,0,0
+	rPathAtVertex, rPathNoVertex, rPathMax := 0,0,0
+	if  r.Left != nil {
+		lPathAtVertex, lPathNoVertex, lPathMax = TreeLongestPath(r.Left)
+		//fmt.Printf("lPath -- AtVertex=%d, NoVertex=%d, lPathMax=%d\r\n", lPathAtVertex, lPathNoVertex, lPathMax)
+	}
+	if  r.Right != nil {
+		rPathAtVertex, rPathNoVertex, rPathMax = TreeLongestPath(r.Right)
+		//fmt.Printf("rPath -- AtVertex=%d, NoVertex=%d, rPathMax=%d\r\n", rPathAtVertex, rPathNoVertex, rPathMax)
+	}
+
+	if  r.Left != nil  &&  r.Right != nil {
+		//左右子树顶点值与当前根节点均相等
+		if r.Val == r.Left.Val && r.Val == r.Right.Val {
+			pathAtVertexRt = max(lPathAtVertex, rPathAtVertex) + 1
+			pathOverVertex = lPathAtVertex + rPathAtVertex + 2
+			pathNoVertexRt = max(lPathNoVertex, rPathNoVertex)
+			pathMaxRt = max3(pathAtVertexRt, pathOverVertex, pathNoVertexRt)
+			//fmt.Println("r.Val == r.Left.Val = r.Right.Val", r.Val)
+			return pathAtVertexRt, pathNoVertexRt, pathMaxRt
+		}
+	}
+	//仅左子树顶点值与当前根节点值相等，右子树为空或者顶点值与当前根节点值不相等
+	if r.Left != nil {
+		if r.Val == r.Left.Val {
+			pathAtVertexRt = lPathAtVertex + 1
+			pathNoVertexRt = max(lPathNoVertex, rPathMax)
+			pathMaxRt = max(pathAtVertexRt, pathNoVertexRt)
+			//fmt.Printf("r.Val:%d == r.Left.Val:%d -- AtVertex=%d, NoVertex=%d, PathMax=%d\r\n", r.Val ,r.Left.Val, pathAtVertexRt, pathNoVertexRt, pathMaxRt)
+			return pathAtVertexRt, pathNoVertexRt, pathMaxRt
+		}
+	}
+	//仅右子树顶点值与当前根节点值相等，左子树为空或者顶点值与当前根节点值不相等
+	if r.Right != nil {
+		if r.Val == r.Right.Val {
+			pathAtVertexRt = rPathAtVertex + 1
+			pathNoVertexRt = max(lPathNoVertex, lPathMax)
+			pathMaxRt = max(pathAtVertexRt, pathNoVertexRt)
+			//fmt.Printf("r.Val:%d == r.Right.Val:%d -- AtVertex=%d, NoVertex=%d, PathMax=%d\r\n", r.Val ,r.Right.Val, pathAtVertexRt, pathNoVertexRt, pathMaxRt)
+			return pathAtVertexRt, pathNoVertexRt, pathMaxRt
+		}
+	}
+	//左右子树顶点值(包括不存在左子树或者右子树情况)与当前根节点均不相等
+	pathAtVertexRt = 0
+	pathNoVertexRt =  max(lPathMax, rPathMax)
+	pathMaxRt = pathNoVertexRt
+	//fmt.Printf("r.Val != r.Right.Val != r.left.Val -- AtVertex=%d, NoVertex=%d, PathMax=%d\r\n", pathAtVertexRt, pathNoVertexRt, pathMaxRt)
+	return pathAtVertexRt,  pathNoVertexRt, pathMaxRt
+}

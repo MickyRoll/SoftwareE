@@ -31,11 +31,11 @@ func max3(a int, b int, c int) int{
 }
 
 func TreeLongestPath(r *TreeNode) (pathAtVertex int, pathNoVertex int, pathMax int) {
-	 pathAtVertexRt, pathNoVertexRt, pathMaxRt := 0,0,0
-	 pathOverVertex := 0
-	 if r == nil {
-	 	return pathAtVertexRt, pathNoVertexRt, pathMaxRt
-	 }
+	pathAtVertexRt, pathNoVertexRt, pathMaxRt := 0,0,0
+	pathOverVertex := 0
+	if r == nil {
+		return pathAtVertexRt, pathNoVertexRt, pathMaxRt
+	}
 	//左右子树为空
 	if r.Left == nil  &&  r.Right == nil{
 		pathAtVertexRt = 0
@@ -60,8 +60,8 @@ func TreeLongestPath(r *TreeNode) (pathAtVertex int, pathNoVertex int, pathMax i
 		if r.Val == r.Left.Val && r.Val == r.Right.Val {
 			pathAtVertexRt = max(lPathAtVertex, rPathAtVertex) + 1
 			pathOverVertex = lPathAtVertex + rPathAtVertex + 2
-			pathNoVertexRt = max(lPathNoVertex, rPathNoVertex)
-			pathMaxRt = max3(pathAtVertexRt, pathOverVertex, pathNoVertexRt)
+			pathNoVertexRt = max3(lPathNoVertex, rPathNoVertex, pathOverVertex)
+			pathMaxRt = max(pathAtVertexRt, pathNoVertexRt)
 			//fmt.Println("r.Val == r.Left.Val = r.Right.Val", r.Val)
 			return pathAtVertexRt, pathNoVertexRt, pathMaxRt
 		}
@@ -80,7 +80,7 @@ func TreeLongestPath(r *TreeNode) (pathAtVertex int, pathNoVertex int, pathMax i
 	if r.Right != nil {
 		if r.Val == r.Right.Val {
 			pathAtVertexRt = rPathAtVertex + 1
-			pathNoVertexRt = max(lPathNoVertex, lPathMax)
+			pathNoVertexRt = max(rPathNoVertex, lPathMax)
 			pathMaxRt = max(pathAtVertexRt, pathNoVertexRt)
 			//fmt.Printf("r.Val:%d == r.Right.Val:%d -- AtVertex=%d, NoVertex=%d, PathMax=%d\r\n", r.Val ,r.Right.Val, pathAtVertexRt, pathNoVertexRt, pathMaxRt)
 			return pathAtVertexRt, pathNoVertexRt, pathMaxRt
